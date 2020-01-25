@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('dashboard', [
+    'as'    => 'youtube.dashboard',
+    'uses'  => 'YoutubeController@show',
+]);

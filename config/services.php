@@ -35,4 +35,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'youtube' => [
+        'key' => env('YOUTUBE_KEY'),
+    ],
 ];
