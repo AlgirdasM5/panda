@@ -2,32 +2,80 @@
 
 namespace App\Models\Youtube;
 
-use JMS\Serializer\Annotation as JMS;
+use Carbon\Carbon;
 
 class Channel
 {
     const TARGET_ID = 'UUpRmvjdu3ixew5ahydZ67uA';
 
     /**
-     * @JMS\Type("integer")
-     *
-     * @var integer
+     * @var string
      */
     protected $id;
 
     /**
-     * @return int
+     * @var array
      */
-    public function getId(): int
+    protected $videoIds;
+
+    /**
+     * @var Carbon
+     */
+    protected $createdAt;
+
+    /**
+     * @return string
+     */
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      */
-    public function setId(int $id)
+    public function setId(string $id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVideoIds(): array
+    {
+        return $this->videoIds;
+    }
+
+    /**
+     * @param array $videoIds
+     */
+    public function setVideoIds(array $videoIds)
+    {
+        $this->videoIds = $videoIds;
+    }
+
+    /**
+     * @param string $videoId
+     */
+    public function addVideoId(string $videoId)
+    {
+        $this->videoIds[] = $videoId;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param Carbon $createdAt
+     */
+    public function setCreatedAt(Carbon $createdAt)
+    {
+        $this->createdAt = $createdAt;
     }
 }

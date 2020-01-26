@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Youtube;
+namespace App\Services\Youtube;
 
 use Google_Service_YouTube_PlaylistItemListResponse;
 use Google_Service_YouTube_VideoListResponse;
