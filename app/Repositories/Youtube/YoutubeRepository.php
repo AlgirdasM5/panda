@@ -11,11 +11,14 @@ use App\Models\Youtube\VideoHistory;
 use App\Services\Youtube\YoutubeService;
 use Exception;
 use Google_Service_YouTube_PlaylistItemListResponse;
+use Google_Service_YouTube_PlaylistListResponse;
 use Google_Service_YouTube_VideoListResponse;
 use Illuminate\Support\Facades\DB;
 
 class YoutubeRepository
 {
+    const MAX_RESULTS = 50;
+
     /**
      * @var YoutubeService
      */
@@ -118,7 +121,7 @@ class YoutubeRepository
      */
     protected function getChannel(string $id): Channel
     {
-        $playlist = $this->getPlaylistItemsById($id);
+        $playlist = $this->getPlaylistItemsById(implode(',', $this->getPlaylists($id)));
 
         $this->channelFactory->setId($id);
         $this->channelFactory->setResponse($playlist);
@@ -126,6 +129,24 @@ class YoutubeRepository
         $channel = $this->channelFactory->create();
 
         return $channel;
+    }
+
+    /**
+     * @param string $channelId
+     * @return Video[]
+     * @throws Exception
+     */
+    protected function getPlaylists(string $channelId): array
+    {
+        $list = [];
+
+        $playlists = $this->getPlaylistsByChannelId($channelId);
+
+        foreach ($playlists->getItems() as $playlist) {
+            $list[] = $playlist->getId();
+        }
+
+        return $list;
     }
 
     /**
@@ -168,11 +189,28 @@ class YoutubeRepository
 
     /**
      * @param string $id
+     * @return Google_Service_YouTube_PlaylistListResponse
+     */
+    public function getPlaylistsByChannelId(string $id): Google_Service_YouTube_PlaylistListResponse
+    {
+        $response = $this->youtubeService->getPlaylists(
+            'id',
+            ['channelId' => $id, 'maxResults' => self::MAX_RESULTS]
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param string $id
      * @return Google_Service_YouTube_PlaylistItemListResponse
      */
     public function getPlaylistItemsById(string $id): Google_Service_YouTube_PlaylistItemListResponse
     {
-        $response = $this->youtubeService->getPlaylistItems('snippet,contentDetails', ['playlistId' => $id]);
+        $response = $this->youtubeService->getPlaylistItems(
+            'snippet,contentDetails',
+            ['playlistId' => $id, 'maxResults' => self::MAX_RESULTS]
+        );
 
         return $response;
     }
@@ -183,7 +221,10 @@ class YoutubeRepository
      */
     public function getVideosByIds(array $ids): Google_Service_YouTube_VideoListResponse
     {
-        $response = $this->youtubeService->getVideoInfo('snippet,statistics', ['id' => implode(',', $ids)]);
+        $response = $this->youtubeService->getVideoInfo(
+            'snippet,statistics',
+            ['id' => implode(',', $ids), 'maxResults' => self::MAX_RESULTS]
+        );
 
         return $response;
     }

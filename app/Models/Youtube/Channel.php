@@ -4,7 +4,7 @@ namespace App\Models\Youtube;
 
 class Channel
 {
-    const TARGET_ID = 'UUpRmvjdu3ixew5ahydZ67uA';
+    const TARGET_ID = 'UCfar0VRbYG12IlPgy0peMTA';
 
     /**
      * @var string
