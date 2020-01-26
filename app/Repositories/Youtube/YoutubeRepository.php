@@ -57,7 +57,7 @@ class YoutubeRepository
      * @param string $id
      * @throws Exception
      */
-    public function scrapeVideosByChannel(string $id = Channel::TARGET_ID)
+    public function scrapeVideosByChannel(string $id)
     {
         $channel = $this->getChannel($id);
         $videos = $this->getVideosByIds($channel->getVideoIds());
