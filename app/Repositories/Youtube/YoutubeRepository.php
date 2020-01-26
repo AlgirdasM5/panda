@@ -7,10 +7,12 @@ use App\Factories\Youtube\VideoFactory;
 use App\Factories\Youtube\VideoHistoryFactory;
 use App\Models\Youtube\Channel;
 use App\Models\Youtube\Video;
+use App\Models\Youtube\VideoHistory;
 use App\Services\Youtube\YoutubeService;
 use Exception;
 use Google_Service_YouTube_PlaylistItemListResponse;
 use Google_Service_YouTube_VideoListResponse;
+use Illuminate\Support\Facades\DB;
 
 class YoutubeRepository
 {
@@ -54,15 +56,59 @@ class YoutubeRepository
     }
 
     /**
-     * @param string $id
+     * @param array $ids
      * @throws Exception
      */
-    public function scrapeVideosByChannel(string $id)
+    public function scrapeVideosByChannels(array $ids)
     {
-        $channel = $this->getChannel($id);
-        $videos = $this->getVideosByIds($channel->getVideoIds());
-        $videoList = $this->getVideoList($videos);
-        $historyList = $this->getVideoHistoryList($videos);
+        $channelList = [];
+        $videoList = [];
+        $historyList = [];
+
+        foreach ($ids as $id) {
+            $channel = $this->getChannel($id);
+            $videos = $this->getVideosByIds($channel->getVideoIds());
+
+            $channelList[] = $channel;
+            $videoList = array_merge($videoList, $this->getVideoList($videos, $id));
+            $historyList = array_merge($historyList, $this->getVideoHistoryList($videos));
+        }
+
+        $this->saveData($channelList, $videoList, $historyList);
+    }
+
+    /**
+     * @param Channel[] $channelList
+     * @param Video[] $videoList
+     * @param VideoHistory[] $historyList
+     */
+    protected function saveData(array $channelList, array $videoList, array $historyList)
+    {
+        DB::table('channel')->insertOrIgnore(collect($channelList)->map(function ($channel) {
+            /** @var Channel $channel */
+            return [
+                'id' => $channel->getId(),
+            ];
+        })->toArray());
+
+        DB::table('video')->insertOrIgnore(collect($videoList)->map(function ($video) {
+            /** @var Video $video */
+            return [
+                'id' => $video->getId(),
+                'channel_id' => $video->getChannelId(),
+                'title' => $video->getTitle(),
+                'tags' => implode(',', $video->getTags()),
+                'published_at' => $video->getPublishedAt(),
+            ];
+        })->toArray());
+
+        DB::table('video_history')->insert(collect($historyList)->map(function ($history) {
+            /** @var VideoHistory $history */
+            return [
+                'video_id' => $history->getVideoId(),
+                'view_count' => $history->getViewCount(),
+            ];
+        })->toArray());
     }
 
     /**
@@ -84,14 +130,16 @@ class YoutubeRepository
 
     /**
      * @param Google_Service_YouTube_VideoListResponse $videos
+     * @param string $channelId
      * @return Video[]
      * @throws Exception
      */
-    protected function getVideoList(Google_Service_YouTube_VideoListResponse $videos): array
+    protected function getVideoList(Google_Service_YouTube_VideoListResponse $videos, string $channelId): array
     {
         $list = [];
 
         foreach ($videos->getItems() as $item) {
+            $this->videoFactory->setChannelId($channelId);
             $this->videoFactory->setVideo($item);
 
             $list[] = $this->videoFactory->create();

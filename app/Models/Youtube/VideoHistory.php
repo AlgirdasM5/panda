@@ -2,8 +2,6 @@
 
 namespace App\Models\Youtube;
 
-use Carbon\Carbon;
-
 class VideoHistory
 {
     /**
@@ -20,11 +18,6 @@ class VideoHistory
      * @var integer
      */
     protected $viewCount;
-
-    /**
-     * @var Carbon
-     */
-    protected $createdAt;
 
     /**
      * @return int
@@ -72,21 +65,5 @@ class VideoHistory
     public function setViewCount(int $viewCount)
     {
         $this->viewCount = $viewCount;
-    }
-
-    /**
-     * @return Carbon
-     */
-    public function getCreatedAt(): Carbon
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param Carbon $createdAt
-     */
-    public function setCreatedAt(Carbon $createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 }

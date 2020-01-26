@@ -2,8 +2,6 @@
 
 namespace App\Models\Youtube;
 
-use Carbon\Carbon;
-
 class Channel
 {
     const TARGET_ID = 'UUpRmvjdu3ixew5ahydZ67uA';
@@ -16,12 +14,7 @@ class Channel
     /**
      * @var array
      */
-    protected $videoIds;
-
-    /**
-     * @var Carbon
-     */
-    protected $createdAt;
+    protected $videoIds = [];
 
     /**
      * @return string
@@ -61,21 +54,5 @@ class Channel
     public function addVideoId(string $videoId)
     {
         $this->videoIds[] = $videoId;
-    }
-
-    /**
-     * @return Carbon
-     */
-    public function getCreatedAt(): Carbon
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param Carbon $createdAt
-     */
-    public function setCreatedAt(Carbon $createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 }

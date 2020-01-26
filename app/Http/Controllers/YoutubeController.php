@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Youtube\Channel;
 use App\Repositories\Youtube\YoutubeRepository;
 use Exception;
 use Illuminate\View\View;
@@ -28,7 +29,7 @@ class YoutubeController extends Controller
      */
     public function show()
     {
-        $this->youtubeRepository->scrapeVideosByChannel();
+        $this->youtubeRepository->scrapeVideosByChannels([Channel::TARGET_ID]);
 
         return view('youtube.show');
     }

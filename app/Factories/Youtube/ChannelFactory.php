@@ -3,7 +3,6 @@
 namespace App\Factories\Youtube;
 
 use App\Models\Youtube\Channel;
-use Carbon\Carbon;
 use Google_Service_YouTube_PlaylistItem;
 use Google_Service_YouTube_PlaylistItemListResponse;
 use Exception;
@@ -28,7 +27,6 @@ class ChannelFactory
     {
         $model = new Channel();
         $model->setId($this->id);
-        $model->setCreatedAt(new Carbon());
 
         /** @var Google_Service_YouTube_PlaylistItem $item */
         foreach ($this->response->getItems() as $item) {
@@ -45,6 +43,7 @@ class ChannelFactory
     {
         $this->id = $id;
     }
+
     /**
      * @param Google_Service_YouTube_PlaylistItemListResponse $response
      */

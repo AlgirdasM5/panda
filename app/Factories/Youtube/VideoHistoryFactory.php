@@ -24,7 +24,6 @@ class VideoHistoryFactory
 
         $model->setVideoId($this->video->getId());
         $model->setViewCount($this->video->getStatistics()->getViewCount());
-        $model->setCreatedAt(new Carbon());
 
         return $model;
     }

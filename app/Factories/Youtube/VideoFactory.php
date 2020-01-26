@@ -10,6 +10,11 @@ use Exception;
 class VideoFactory
 {
     /**
+     * @var string
+     */
+    protected $channelId;
+
+    /**
      * @var Google_Service_YouTube_Video
      */
     protected $video;
@@ -28,10 +33,17 @@ class VideoFactory
         $model->setPublishedAt(new Carbon($snippet->getPublishedAt()));
         $model->setTags($snippet->getTags() ?: []);
         $model->setTitle($snippet->getTitle());
-        $model->setChannelId($snippet->getChannelId());
-        $model->setCreatedAt(new Carbon());
+        $model->setChannelId($this->channelId);
 
         return $model;
+    }
+
+    /**
+     * @param string $channelId
+     */
+    public function setChannelId(string $channelId)
+    {
+        $this->channelId = $channelId;
     }
 
     /**

@@ -46,7 +46,7 @@ class ScrapeYoutube extends Command
         $this->info('Youtube scraping started');
 
         try {
-            $this->youtubeRepository->scrapeVideosByChannel(Channel::TARGET_ID);
+            $this->youtubeRepository->scrapeVideosByChannels([Channel::TARGET_ID]);
         } catch (Exception $e) {
             $this->error('Youtube scraping failed', $e->getMessage());
         }

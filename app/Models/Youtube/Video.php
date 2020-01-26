@@ -24,17 +24,12 @@ class Video
     /**
      * @var array
      */
-    protected $tags;
+    protected $tags = [];
 
     /**
      * @var Carbon
      */
     protected $publishedAt;
-
-    /**
-     * @var Carbon
-     */
-    protected $createdAt;
 
     /**
      * @return string
@@ -114,21 +109,5 @@ class Video
     public function setPublishedAt(Carbon $publishedAt)
     {
         $this->publishedAt = $publishedAt;
-    }
-
-    /**
-     * @return Carbon
-     */
-    public function getCreatedAt(): Carbon
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param Carbon $createdAt
-     */
-    public function setCreatedAt(Carbon $createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 }
