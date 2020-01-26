@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Youtube;
 
 use App\Models\Youtube\Channel;
 use App\Service\Youtube\YoutubeService;
+use Google_Service_YouTube_PlaylistItemListResponse;
+use Google_Service_YouTube_VideoListResponse;
 use JMS\Serializer\Serializer;
 
 class YoutubeRepository
@@ -29,12 +31,23 @@ class YoutubeRepository
     }
 
     /**
-     * @param string $channel
-     * @return string
+     * @param string $id
+     * @return Google_Service_YouTube_PlaylistItemListResponse
      */
-    public function getChannelInfo($channel = Channel::TARGET): string
+    public function getPlaylistItemsById($id = Channel::TARGET_ID): Google_Service_YouTube_PlaylistItemListResponse
     {
-        $response = $this->youtubeService->getChannelInfo($channel);
+        $response = $this->youtubeService->getPlaylistItems('contentDetails', ['playlistId' => $id]);
+
+        return $response;
+    }
+
+    /**
+     * @param string $id
+     * @return Google_Service_YouTube_VideoListResponse
+     */
+    public function getVideoInfoById($id = 'iw-gHTZhuKg,qkIrXWvOX5E'): Google_Service_YouTube_VideoListResponse
+    {
+        $response = $this->youtubeService->getVideoInfo('snippet,statistics', ['id' => $id]);
 
         return $response;
     }

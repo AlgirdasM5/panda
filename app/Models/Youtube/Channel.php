@@ -6,7 +6,7 @@ use JMS\Serializer\Annotation as JMS;
 
 class Channel
 {
-    const TARGET = 'UCffUJFx_KxLu-MQdvBZkCCg';
+    const TARGET_ID = 'UUpRmvjdu3ixew5ahydZ67uA';
 
     /**
      * @JMS\Type("integer")
