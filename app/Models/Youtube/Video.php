@@ -3,111 +3,28 @@
 namespace App\Models\Youtube;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
-class Video
+/**
+ * Class Video
+ * @package App\Models\Youtube
+ * @method static Video updateOrCreate(array $find, array $data)
+ * @property string $id
+ * @property string $channel_id
+ * @property string title
+ * @property array $tags
+ * @property Carbon $published_at
+ */
+class Video extends Model
 {
     /**
-     * @var string
+     * @var string[]
      */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $channelId;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var array
-     */
-    protected $tags = [];
-
-    /**
-     * @var Carbon
-     */
-    protected $publishedAt;
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId(string $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getChannelId(): string
-    {
-        return $this->channelId;
-    }
-
-    /**
-     * @param string $channelId
-     */
-    public function setChannelId(string $channelId)
-    {
-        $this->channelId = $channelId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle(string $title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTags(): array
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * @return Carbon
-     */
-    public function getPublishedAt(): Carbon
-    {
-        return $this->publishedAt;
-    }
-
-    /**
-     * @param Carbon $publishedAt
-     */
-    public function setPublishedAt(Carbon $publishedAt)
-    {
-        $this->publishedAt = $publishedAt;
-    }
+    protected $fillable = [
+        'id',
+        'channel_id',
+        'title',
+        'tags',
+        'published_at',
+    ];
 }

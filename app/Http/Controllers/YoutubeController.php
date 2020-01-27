@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Factories\Youtube\YoutubeFactory;
 use App\Models\Youtube\Channel;
-use App\Repositories\Youtube\YoutubeRepository;
 use Exception;
 use Illuminate\View\View;
 
 class YoutubeController extends Controller
 {
     /**
-     * @var YoutubeRepository
+     * @var YoutubeFactory
      */
-    private $youtubeRepository;
+    private $youtubeFactory;
 
     /**
      * YoutubeController constructor.
-     * @var YoutubeRepository $youtubeRepository
+     * @var YoutubeFactory $youtubeFactory
      */
-    public function __construct(YoutubeRepository $youtubeRepository)
+    public function __construct(YoutubeFactory $youtubeFactory)
     {
-        $this->youtubeRepository = $youtubeRepository;
+        $this->youtubeFactory = $youtubeFactory;
     }
 
     /**
@@ -29,7 +29,7 @@ class YoutubeController extends Controller
      */
     public function show()
     {
-        $this->youtubeRepository->scrapeVideosByChannels([Channel::TARGET_ID]);
+        $this->youtubeFactory->scrapeVideosByChannels([Channel::TARGET_ID]);
 
         return view('youtube.show');
     }

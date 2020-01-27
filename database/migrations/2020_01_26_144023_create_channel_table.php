@@ -13,9 +13,9 @@ class CreateChannelTable extends Migration
      */
     public function up()
     {
-        Schema::create('channel', function (Blueprint $table) {
+        Schema::create('channels', function (Blueprint $table) {
             $table->string('id')->unique();
-            $table->timestamp('created_at');
+            $table->timestamps();
 
             $table->primary('id');
             $table->index('id');

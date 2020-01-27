@@ -13,7 +13,7 @@ class CreateVideoHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('video_history', function (Blueprint $table) {
+        Schema::create('video_histories', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->string('video_id');
             $table->bigInteger('view_count');
@@ -23,7 +23,7 @@ class CreateVideoHistoryTable extends Migration
             $table->index('video_id');
 
             $table->foreign('video_id')
-                ->references('id')->on('video')
+                ->references('id')->on('videos')
                 ->onDelete('cascade');
         });
     }

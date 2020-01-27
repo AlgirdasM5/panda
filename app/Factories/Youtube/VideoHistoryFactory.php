@@ -3,36 +3,33 @@
 namespace App\Factories\Youtube;
 
 use App\Models\Youtube\VideoHistory;
-use Carbon\Carbon;
 use Google_Service_YouTube_Video;
-use Exception;
 
 class VideoHistoryFactory
 {
     /**
      * @var Google_Service_YouTube_Video
      */
-    protected $video;
+    protected $response;
 
     /**
-     * @return VideoHistory
-     * @throws Exception
+     *
      */
-    public function create(): VideoHistory
+    public function create()
     {
-        $model = new VideoHistory();
+        $model = new VideoHistory([
+            'video_id' => $this->response->getId(),
+            'view_count' => $this->response->getStatistics()->getViewCount(),
+        ]);
 
-        $model->setVideoId($this->video->getId());
-        $model->setViewCount($this->video->getStatistics()->getViewCount());
-
-        return $model;
+        $model->save();
     }
 
     /**
-     * @param Google_Service_YouTube_Video $video
+     * @param Google_Service_YouTube_Video $response
      */
-    public function setVideo(Google_Service_YouTube_Video $video)
+    public function setResponse(Google_Service_YouTube_Video $response)
     {
-        $this->video = $video;
+        $this->response = $response;
     }
 }

@@ -13,20 +13,20 @@ class CreateVideoTable extends Migration
      */
     public function up()
     {
-        Schema::create('video', function (Blueprint $table) {
+        Schema::create('videos', function (Blueprint $table) {
             $table->string('id')->unique();
             $table->string('channel_id');
             $table->string('title');
             $table->string('tags')->nullable();
             $table->dateTime('published_at');
-            $table->timestamp('created_at');
+            $table->timestamps();
 
             $table->primary('id');
             $table->index('id');
             $table->index('channel_id');
 
             $table->foreign('channel_id')
-                ->references('id')->on('channel')
+                ->references('id')->on('channels')
                 ->onDelete('cascade');
         });
     }

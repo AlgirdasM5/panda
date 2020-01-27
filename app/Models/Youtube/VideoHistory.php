@@ -2,68 +2,41 @@
 
 namespace App\Models\Youtube;
 
-class VideoHistory
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class VideoHistory
+ * @package App\Models\Youtube
+ * @property string $id
+ * @property string $video_id
+ * @property int $view_count
+ */
+class VideoHistory extends Model
 {
     /**
-     * @var integer
+     * @var bool
      */
-    protected $id;
+    public $timestamps = false;
 
     /**
-     * @var string
+     * @var string[]
      */
-    protected $videoId;
+    protected $fillable = [
+        'id',
+        'video_id',
+        'view_count',
+    ];
 
     /**
-     * @var integer
+     *
      */
-    protected $viewCount;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public static function boot()
     {
-        return $this->id;
-    }
+        parent::boot();
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVideoId(): string
-    {
-        return $this->videoId;
-    }
-
-    /**
-     * @param string $videoId
-     */
-    public function setVideoId(string $videoId)
-    {
-        $this->videoId = $videoId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getViewCount(): int
-    {
-        return $this->viewCount;
-    }
-
-    /**
-     * @param int $viewCount
-     */
-    public function setViewCount(int $viewCount)
-    {
-        $this->viewCount = $viewCount;
+        static::creating(function ($model) {
+            $model->created_at = new Carbon();
+        });
     }
 }

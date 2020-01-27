@@ -6,6 +6,7 @@ use App\Models\Youtube\Channel;
 use Google_Service_YouTube_PlaylistItem;
 use Google_Service_YouTube_PlaylistItemListResponse;
 use Exception;
+use Illuminate\Support\Collection;
 
 class ChannelFactory
 {
@@ -20,20 +21,57 @@ class ChannelFactory
     protected $response;
 
     /**
-     * @return Channel
+     * @var Channel
+     */
+    protected $model;
+
+    /**
+     * ChannelFactory constructor.
+     * @param Channel $model
+     */
+    public function __construct(Channel $model)
+    {
+        $this->model = $model;
+    }
+
+    /**
      * @throws Exception
      */
-    public function create(): Channel
+    public function create()
     {
         $model = new Channel();
-        $model->setId($this->id);
+
+        $map = $this->map();
+
+        $model->updateOrCreate([
+            'id' => $this->id,
+        ], $map->toArray());
+    }
+
+    /**
+     * @return Collection
+     */
+    protected function map(): Collection
+    {
+        return collect([
+            'id' => $this->id,
+        ]);
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getVideoIds(): array
+    {
+        $videoIds = [];
 
         /** @var Google_Service_YouTube_PlaylistItem $item */
         foreach ($this->response->getItems() as $item) {
-            $model->addVideoId($item->getContentDetails()->getVideoId());
+            $videoIds[] = $item->getContentDetails()->getVideoId();
         }
 
-        return $model;
+        return $videoIds;
     }
 
     /**

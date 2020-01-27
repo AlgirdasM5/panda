@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Factories\Youtube\YoutubeFactory;
 use App\Models\Youtube\Channel;
-use App\Repositories\Youtube\YoutubeRepository;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -24,18 +24,18 @@ class ScrapeYoutube extends Command
     protected $description = 'Scrape youtube for video statistics';
 
     /**
-     * @var YoutubeRepository
+     * @var YoutubeFactory
      */
-    private $youtubeRepository;
+    private $youtubeFactory;
 
     /**
      * ScrapeYoutube constructor.
-     * @var YoutubeRepository $youtubeRepository
+     * @var YoutubeFactory $youtubeFactory
      */
-    public function __construct(YoutubeRepository $youtubeRepository)
+    public function __construct(YoutubeFactory $youtubeFactory)
     {
         parent::__construct();
-        $this->youtubeRepository = $youtubeRepository;
+        $this->youtubeFactory = $youtubeFactory;
     }
 
     /**
@@ -46,7 +46,7 @@ class ScrapeYoutube extends Command
         $this->info('Youtube scraping started');
 
         try {
-            $this->youtubeRepository->scrapeVideosByChannels([Channel::TARGET_ID]);
+            $this->youtubeFactory->scrapeVideosByChannels([Channel::TARGET_ID]);
         } catch (Exception $e) {
             $this->error('Youtube scraping failed', $e->getMessage());
         }
