@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVideoTable extends Migration
+class CreateChannelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,12 @@ class CreateVideoTable extends Migration
      */
     public function up()
     {
-        Schema::create('videos', function (Blueprint $table) {
+        Schema::create('channels', function (Blueprint $table) {
             $table->string('id')->unique();
-            $table->string('channel_id');
-            $table->string('title');
-            $table->string('tags')->nullable();
-            $table->dateTime('published_at');
             $table->timestamps();
 
             $table->primary('id');
             $table->index('id');
-            $table->index('channel_id');
-
-            $table->foreign('channel_id')
-                ->references('id')->on('channels')
-                ->onDelete('cascade');
         });
     }
 
@@ -38,6 +29,6 @@ class CreateVideoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('video');
+        Schema::dropIfExists('channels');
     }
 }

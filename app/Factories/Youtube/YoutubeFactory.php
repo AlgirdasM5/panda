@@ -88,7 +88,6 @@ class YoutubeFactory
     /**
      * @param string $channelId
      * @return Video[]
-     * @throws Exception
      */
     protected function getPlaylistItems(string $channelId): array
     {
@@ -119,7 +118,6 @@ class YoutubeFactory
 
     /**
      * @param Google_Service_YouTube_VideoListResponse $videos
-     * @throws Exception
      */
     protected function handleVideoHistory(Google_Service_YouTube_VideoListResponse $videos)
     {

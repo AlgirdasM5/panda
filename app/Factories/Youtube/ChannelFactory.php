@@ -43,7 +43,7 @@ class ChannelFactory
 
         $map = $this->map();
 
-        $model->updateOrCreate([
+        $model->newQuery()->updateOrCreate([
             'id' => $this->id,
         ], $map->toArray());
     }

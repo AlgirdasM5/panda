@@ -4,6 +4,7 @@ namespace App\Models\Youtube;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class VideoHistory
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $id
  * @property string $video_id
  * @property int $view_count
+ * @property Carbon $created_at
  */
 class VideoHistory extends Model
 {
@@ -38,5 +40,13 @@ class VideoHistory extends Model
         static::creating(function ($model) {
             $model->created_at = new Carbon();
         });
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function video(): BelongsTo
+    {
+        return $this->belongsTo(Video::class, 'video_id', 'id');
     }
 }

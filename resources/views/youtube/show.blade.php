@@ -3,18 +3,12 @@
     <head>
         <meta charset="utf-8">
         <title>Panda</title>
+        <link rel="stylesheet" href="{{ url(elixir('css/app.css')) }}" type="text/css">
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            <div class="content">
-                <div class="title m-b-md">
-                    Dashboard
-                </div>
-
-                <div class="links">
-                    Hello
-                </div>
-            </div>
+        <div id="app">
+            <stats></stats>
         </div>
+        <script src="{{ url(elixir('js/app.js')) }}"></script>
     </body>
 </html>

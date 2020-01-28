@@ -31,7 +31,7 @@ class VideoFactory
         $snippet = $this->response->getSnippet();
         $map = $this->map($snippet);
 
-        $model->updateOrCreate([
+        $model->newQuery()->updateOrCreate([
             'id' => $this->response->getId(),
         ], $map->toArray());
     }

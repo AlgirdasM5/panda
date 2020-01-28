@@ -35,6 +35,6 @@ class CreateVideoHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('video_history');
+        Schema::dropIfExists('video_histories');
     }
 }

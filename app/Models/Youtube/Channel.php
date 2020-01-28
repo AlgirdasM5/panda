@@ -3,11 +3,11 @@
 namespace App\Models\Youtube;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Channel
  * @package App\Models\Youtube
- * @method static Channel updateOrCreate(array $find, array $data)
  * @property string $id
  */
 class Channel extends Model
@@ -20,4 +20,14 @@ class Channel extends Model
     protected $fillable = [
         'id',
     ];
+
+    protected $keyType = 'string';
+
+    /**
+     * @return HasMany
+     */
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class, 'channel_id', 'id');
+    }
 }
