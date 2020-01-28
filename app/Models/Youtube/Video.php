@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * Class Video
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $id
  * @property string $channel_id
  * @property string title
- * @property array $tags
+ * @property string $tags
  * @property Carbon $published_at
  * @property integer $first_hour_views
  * @property integer $aggregated_views
@@ -51,53 +52,74 @@ class Video extends Model
 
     /**
      * @param string $id
-     * @return \Illuminate\Support\Collection
+     * @return VideoHistory|object|null
      */
-    public function getHistoriesById(string $id): \Illuminate\Support\Collection
+    protected function lastHistory(string $id): ?object
     {
+        // plain SQL as requested:
+        // "SELECT video_histories.*
+        // FROM videos
+        // JOIN video_histories ON video_histories.video_id = videos.id
+        // WHERE videos.id = {{ $id }}
+        // ORDER BY video_histories.id DESC
+        // LIMIT 1"
+
         return $this
             ->newQuery()
             ->selectRaw('video_histories.*')
             ->join('video_histories', 'videos.id', '=', 'video_histories.video_id')
             ->where('videos.id', '=', $id)
-            ->get();
+            ->orderByDesc('video_histories.id')
+            ->limit(1)
+            ->first();
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @param string $tagsNeedle
+     * @return Collection
      */
-    public function getWithFirstHourViews(): \Illuminate\Support\Collection
+    protected function getFilteredWithViews(string $tagsNeedle): Collection
     {
-        return $this->all()->map(function ($item) {
-            $sum = 0;
-
-            /** @var Video $item */
-            foreach ($item->getHistoriesById($item->id) as $history) {
-                /** @var VideoHistory $history */
-                if (new Carbon($history->created_at) < new Carbon($item->published_at)) {
-                    $sum += $history->view_count;
-                }
+        return $this->all()->map(function ($item) use ($tagsNeedle) {
+            if (!empty($tagsNeedle) && strpos($item->tags, $tagsNeedle) === false) {
+                return false;
             }
 
-            $item->first_hour_views = $sum;
+            /** @var Video $item */
+            $history = $item->lastHistory($item->id);
+
+            $item->first_hour_views
+                = new Carbon($history->created_at) < new Carbon($item->published_at)
+                ? $history->view_count
+                : 0;
 
             return $item;
+        })->reject(function ($value) {
+            return $value === false;
         });
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @param string $tagsNeedle
+     * @param string $viewNeedle
+     * @return Collection
      */
-    public function aggregated(): \Illuminate\Support\Collection
+    public function getAggregated(string $tagsNeedle, string $viewNeedle): Collection
     {
-        $withFirstHour = $this->getWithFirstHourViews();
+        $withFirstHour = $this->getFilteredWithViews($tagsNeedle);
 
         $median = $withFirstHour->median('first_hour_views');
 
-        $aggregated = $withFirstHour->map(function ($item) use ($median) {
-            $item->aggregated_views = $item->first_hour_views / $median;
+        $aggregated = $withFirstHour->map(function ($item) use ($median, $viewNeedle) {
+            $item->aggregated_views = $median ? $item->first_hour_views / $median : 0;
+
+            if ($viewNeedle !== '' && strpos((string)$item->aggregated_views, $viewNeedle) === false) {
+                return false;
+            }
 
             return $item;
+        })->reject(function ($value) {
+            return $value === false;
         });
 
         return $aggregated;

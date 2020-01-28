@@ -31,8 +31,10 @@ class YoutubeApiController extends Controller
     public function getStats(Request $request): ResourceCollection
     {
         $result = $this->video
-            ->aggregated()
-        ;
+            ->getAggregated(
+                (string)$request->get('tags'),
+                (string)$request->get('aggregated_views')
+            );
 
         return YoutubeResource::collection($result);
     }

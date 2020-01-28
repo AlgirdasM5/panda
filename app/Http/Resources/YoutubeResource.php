@@ -18,8 +18,6 @@ class YoutubeResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'tags' => $this->resource->tags,
-            'published_at' => $this->resource->published_at,
-            'first_hour_views' => $this->resource->first_hour_views,
             'aggregated_views' => $this->resource->aggregated_views,
         ];
     }
